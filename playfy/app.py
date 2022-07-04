@@ -57,8 +57,7 @@ app.layout = html.Div([
                         className="playlist-owner",
                     ),
             ],
-            style={'display': 'inline-block', 'margin-left': '40%'},
-            ),
+            className="playlist-info",),
     ],
     className="header",),
 
@@ -69,7 +68,7 @@ app.layout = html.Div([
         ],
     className="body",),
     
-])
+], style={"overflow-x:": 'hidden'},)
 
 @app.callback(
     Output('playlist_cover', 'src'),
