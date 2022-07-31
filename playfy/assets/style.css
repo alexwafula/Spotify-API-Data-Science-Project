@@ -45,7 +45,7 @@
 .playlist-info{
     display: inline-block;
     margin-top: 10px;
-    margin-left: 40%;
+    margin-left: 46%;
 }
 
 .cover{
@@ -57,16 +57,22 @@
 
 .playlist-name{
     margin-left: 10px;
-    color: green;
+    color: white;
     float: left;
 }
 
 .playlist-owner{
     margin-left: 10px;
-    color: green;
+    color: white;
 }
 
 .body{
-    top: 0px;
     position: relative;
+    margin-bottom: 50px;
+}
+
+.align-self-center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

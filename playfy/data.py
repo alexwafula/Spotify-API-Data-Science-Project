@@ -91,6 +91,24 @@ def top_artists_playlist(playlist_df):
     series_top = series_top.sort_values(ascending=False)[0:5]
     
     percentage = np.around(100*series_top.values/len(playlist_df), decimals=2)
+
+    percentage_2 = []
+    for i in percentage:
+        percentage_2.append(str(i) + '%')
+    
+    df_top = pd.DataFrame({'artist':series_top.keys(), 'appearances': series_top.values, '% of all': percentage_2})
+
+    return df_top
+
+# Return all artists with their appearances
+def all_top_artists(playlist_df):
+    artists = playlist_df['artist(s)']
+    series_top = pd.DataFrame.from_dict(Counter(map(str.strip, chain.from_iterable(artists.str.split(',')))),
+                             orient='index').squeeze()
+    
+    series_top = series_top.sort_values(ascending=False)
+    
+    percentage = np.around(100*series_top.values/len(playlist_df), decimals=2)
     
     df_top = pd.DataFrame({'artist':series_top.keys(), 'appearances': series_top.values, '% of all': percentage})
 
@@ -98,7 +116,21 @@ def top_artists_playlist(playlist_df):
 
 # Return top 5 albums with most tracks apperances on a playlist
 def top_albums_playlist(playlist_df):
-    return playlist_df.groupby(['album'])['album'].count().sort_values(ascending=False)[0:5]
+    df_top = playlist_df.groupby(['album'])['album'].count().sort_values(ascending=False)[0:5]
+    
+    percentage = np.around(100*df_top.values/len(playlist_df), decimals=2)
+    
+    percentage_2 = []
+    for i in percentage:
+        percentage_2.append(str(i) + '%')
+    
+    df_top = pd.DataFrame({'album':df_top.keys(), 'appearances': df_top.values, '% of all': percentage_2})
+    
+    return df_top
+
+# Return top 5 albums with most tracks apperances on a playlist
+def all_albums_playlist(playlist_df):
+    return playlist_df.groupby(['album'])['album'].count().sort_values(ascending=False)
 
 # Return the track with most popularity (0 to 100)
 def most_popular_track(playlist_df):
