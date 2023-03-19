@@ -1,4 +1,4 @@
-# Imports and authetication
+# Imports
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import cred
@@ -8,22 +8,60 @@ from collections import Counter
 from itertools import chain
 import numpy as np
 
-# Authentication - without user
+# Authetication
+
 client_credentials_manager = SpotifyClientCredentials(client_id= cred.client_id, client_secret= cred.client_secret)
 sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
 # Functions
 
-# From a playlist link, this function return its URI
 def get_id_playlist(playlist_link):
+    """Gets Playlist's Id
+
+    Parameters
+    ----------
+    playlist_link : str
+        Playlist's link
+
+    Returns
+    -------
+    int
+        Playlist's Id Number
+    """
+    
     return playlist_link.split("/")[-1].split('?')[0]
 
-# From a category and ID, an URI is generated
 def generate_uri(category, id):
+    """Generates URI for playlist
+
+    Parameters
+    ----------
+    category : str
+        Category of what is going to be get
+    id : int
+        Playlist's Id
+
+    Returns
+    -------
+    int
+        Playlist's Id Number
+    """
     return "spotify:" + category + ":" + id
 
-# From a playlist link, get the main information of the playlist
 def playlist_info(playlist_link):
+    """Gets the main information of a playlist
+
+    Parameters
+    ----------
+    playlist_link : str
+        Playlist's link
+
+    Returns
+    -------
+    dict
+        Info of the playlist: cover, name, description and owner
+    """
+
     playlist = sp.playlist(get_id_playlist(playlist_link))
     info = {
         'cover': sp.playlist_cover_image(get_id_playlist(playlist_link))[0]['url'],
@@ -33,8 +71,20 @@ def playlist_info(playlist_link):
     }
     return info
 
-# From a playlist link, creates a Pandas DataFrame with the tracks information
 def create_playlist_df(playlist_link):
+    """Create a Pandas DataFrame from the tracks informations
+
+    Parameters
+    ----------
+    playlist_link : str
+        Playlist's link
+
+    Returns
+    -------
+    DataFrame
+        Pandas DataFrame with tracks information
+    """
+
     playlist_id = get_id_playlist(playlist_link)
         
     tracks = sp.playlist_tracks(playlist_id)
@@ -82,8 +132,20 @@ def create_playlist_df(playlist_link):
         
     return pd.DataFrame(tracks_playlist)
 
-# Return top 5 artists with most tracks apperances on a playlist
 def top_artists_playlist(playlist_df):
+    """Gets top 5 artists with most tracks apperances on a playlist
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        DataFrame with top 5 artists (appearances and their % in the whole playlist)
+    """
+
     artists = playlist_df['artist(s)']
     series_top = pd.DataFrame.from_dict(Counter(map(str.strip, chain.from_iterable(artists.str.split(',')))),
                              orient='index').squeeze()
@@ -100,8 +162,20 @@ def top_artists_playlist(playlist_df):
 
     return df_top
 
-# Return all artists with their appearances
 def all_top_artists(playlist_df):
+    """Gets all artists and their appearances
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        DataFrame with artists infos (appearances and their % in the whole playlist)
+    """
+
     artists = playlist_df['artist(s)']
     series_top = pd.DataFrame.from_dict(Counter(map(str.strip, chain.from_iterable(artists.str.split(',')))),
                              orient='index').squeeze()
@@ -114,8 +188,20 @@ def all_top_artists(playlist_df):
 
     return df_top
 
-# Return top 5 albums with most tracks apperances on a playlist
 def top_albums_playlist(playlist_df):
+    """Gets top 5 albums with most tracks apperances on a playlist
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        DataFrame with top 5 albums (appearances and their % in the whole playlist)
+    """
+
     df_top = playlist_df.groupby(['album'])['album'].count().sort_values(ascending=False)[0:5]
     
     percentage = np.around(100*df_top.values/len(playlist_df), decimals=2)
@@ -128,18 +214,66 @@ def top_albums_playlist(playlist_df):
     
     return df_top
 
-# Return top 5 albums with most tracks apperances on a playlist
 def all_albums_playlist(playlist_df):
+    """Gets all albums and their appearances
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        DataFrame with albums infos (appearances and their % in the whole playlist)
+    """
+
     return playlist_df.groupby(['album'])['album'].count().sort_values(ascending=False)
 
-# Return the track with most popularity (0 to 100)
 def most_popular_track(playlist_df):
+    """Gets the most popular track in a playlist
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        Infos for the most popular track in the playlist
+    """
+
     return playlist_df.iloc[playlist_df["popularity"].idxmax()]
 
-# Return track with most duration on the playlist
 def longest_track(playlist_df):
+    """Gets the longest track in a playlist
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        Infos for the longest track in the playlist
+    """
+
     return playlist_df.iloc[playlist_df["duration"].idxmax()]
 
-# Return track with most duration on the playlist
 def shortest_track(playlist_df):
+    """Gets the shortest track in a playlist
+
+    Parameters
+    ----------
+    playlist_df : DataFrame
+        Playlist DataFrame with tracks infos
+
+    Returns
+    -------
+    DataFrame
+        Infos for the shortest track in the playlist
+    """
+
     return playlist_df.iloc[playlist_df["duration"].idxmin()]

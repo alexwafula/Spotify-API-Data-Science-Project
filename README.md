@@ -15,6 +15,17 @@ You can see the main functions that are used on the project in a more visual way
 PlayFy uses the Spotify API with Python. The main Python packages and libraries used were [Spotipy](https://spotipy.readthedocs.io/en/2.19.0/) and [Plotly/Dash](https://dash.plotly.com/).
 
 
+## How to run it (locally)
+
+1. Create a virtual env for it: `python -m venv <venv_name>`
+1. Activate it: `\<venv_name>\Scripts\activate`
+1. Install the requirements: `pip install -r requirements.txt`
+1. Run the application: `python playfy/app.py`
+1. Access it on your browser
+
+(EXPLAIN ABOUT AUTHENTICATION)
+
+------------------------------------------------------------------------------------------------
 
 *Programmer note:*
 
